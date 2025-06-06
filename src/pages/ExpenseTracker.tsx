@@ -42,8 +42,17 @@ interface CapitalAsset {
 }
 
 const ExpenseTracker = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [capitalAssets, setCapitalAssets] = useState<CapitalAsset[]>([]);
+  // Initialize state from localStorage
+  const [expenses, setExpenses] = useState<Expense[]>(() => {
+    const savedExpenses = localStorage.getItem('expenses');
+    return savedExpenses ? JSON.parse(savedExpenses) : [];
+  });
+  
+  const [capitalAssets, setCapitalAssets] = useState<CapitalAsset[]>(() => {
+    const savedAssets = localStorage.getItem('capitalAssets');
+    return savedAssets ? JSON.parse(savedAssets) : [];
+  });
+
   const [newExpense, setNewExpense] = useState<Partial<Expense>>({
     date: new Date().toISOString().split('T')[0],
     businessUsePercent: 100,
@@ -95,6 +104,16 @@ const ExpenseTracker = () => {
       }));
     }
   }, [newExpense.totalAmount, newExpense.businessUsePercent]);
+
+  // Save expenses to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }, [expenses]);
+
+  // Save capital assets to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('capitalAssets', JSON.stringify(capitalAssets));
+  }, [capitalAssets]);
 
   const addExpense = () => {
     if (!newExpense.vendor || !newExpense.description || !newExpense.totalAmount) {
