@@ -248,6 +248,36 @@ const ExpenseTracker = () => {
     a.click();
   };
 
+  const exportCapitalAssetsToCSV = () => {
+    const headers = [
+      'Description', 'Purchase Date', 'Business Start Date', 'Original Cost', 
+      'Fair Market Value', 'CCA Class', 'CCA Rate %', 'Business Use %',
+      'Year 1 Depreciation', 'Year 2 Depreciation', 'Year 3 Depreciation', 
+      'Year 4 Depreciation', 'Year 5 Depreciation'
+    ];
+    
+    const rows = capitalAssets.map(asset => [
+      asset.description, asset.purchaseDate, asset.businessStartDate, asset.originalCost,
+      asset.fmv, asset.ccaClass, asset.ccaRate, asset.businessUsePercent,
+      asset.yearlyDepreciation[0]?.depreciation || 0,
+      asset.yearlyDepreciation[1]?.depreciation || 0,
+      asset.yearlyDepreciation[2]?.depreciation || 0,
+      asset.yearlyDepreciation[3]?.depreciation || 0,
+      asset.yearlyDepreciation[4]?.depreciation || 0
+    ]);
+    
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `freelance-capital-assets-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
   const totalDeductions = expenses.reduce((sum, exp) => sum + exp.deductibleAmount, 0);
   const totalITC = expenses.reduce((sum, exp) => sum + exp.itcClaimable, 0);
   const totalCCAThisYear = capitalAssets.reduce((sum, asset) => 
@@ -260,7 +290,7 @@ const ExpenseTracker = () => {
       <div className="container mx-auto p-6 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Freelance Expense Tracker</h1>
-          <p className="text-gray-600">Track business expenses, HST, and capital asset depreciation for Canadian tax purposes</p>
+          <p className="text-gray-600">Track business expenses, HST, and capital asset depreciation for tax purposes</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -604,9 +634,15 @@ const ExpenseTracker = () => {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Capital Assets</CardTitle>
-                <CardDescription>{capitalAssets.length} assets tracked</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Capital Assets</CardTitle>
+                  <CardDescription>{capitalAssets.length} assets tracked</CardDescription>
+                </div>
+                <Button onClick={exportCapitalAssetsToCSV} variant="outline">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export CSV
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
