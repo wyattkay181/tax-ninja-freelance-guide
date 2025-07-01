@@ -16,10 +16,10 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            Freelance Tax Tracker
+            Freelance Tax Ninja
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Simplify your Canadian freelance taxes. Track expenses, calculate deductions, 
+            Simplify your freelance taxes. Track expenses, calculate deductions, 
             manage HST, and handle capital asset depreciation - all in one place.
           </p>
           <Button 
@@ -212,7 +212,10 @@ const Index = () => {
               Launch Expense Tracker
             </Button>
             <p className="text-sm text-gray-500 mt-4">
-              Free to use • Canadian tax compliant • Export ready
+              Free to use • Export ready
+            </p>
+            <p className="text-xs text-red-600 mt-2 border-t pt-2">
+              Disclaimer: This tool is not created by a tax expert. Please consult with a qualified tax professional for advice specific to your situation.
             </p>
           </CardContent>
         </Card>
